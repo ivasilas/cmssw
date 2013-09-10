@@ -4,8 +4,7 @@
 //    july 2012 @ CU    //
 //////////////////////////
   
-// another test
-// and yet another one
+// EP: a nth test to check git diff with remote branches...
 
 #ifndef L1TTRACK_PRDC_H
 #define L1TTRACK_PRDC_H
