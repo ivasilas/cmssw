@@ -572,7 +572,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       L1TStub L1Stub(theSimtrackId, aStub->iphi(), aStub->iz(),
 		     aStub->layer()+1, aStub->ladder()+1, aStub->module(),
-		     aStub->x(), aStub->y(), aStub->z(),0.0,0.0);
+		     aStub->x(), aStub->y(), aStub->z(),0.0,0.0,aStub->pt());
       delete aStub;
 
       stubMap.insert( make_pair(L1Stub, L1TkStubPtrType(pixelDigiL1TkStubHandle,

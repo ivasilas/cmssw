@@ -41,8 +41,11 @@ public:
     int nSector=NSector_*phi/two_pi;
     assert(nSector>=0);
     assert(nSector<NSector_);
+    
+    L1TStub tmp=aStub;
+    tmp.lorentzcor(-40.0/10000.0);
 
-    stubs_[nSector].push_back(aStub);
+    stubs_[nSector].push_back(tmp);
     return true;
   }
 
@@ -83,7 +86,7 @@ public:
 	    double dist=sqrt(r2*r2+r1*r1-2*r1*r2*cos(deltaphi));
         
 	    double rinv=2*sin(deltaphi)/dist;
-	    
+
 	    double phi0=phi1+asin(0.5*r1*rinv);
 
 	    if (phi0>0.5*two_pi) phi0-=two_pi;
@@ -107,6 +110,24 @@ public:
 
 	    if (fabs(z0)>30.0) continue;
 	    if (fabs(rinv)>0.0057) continue;
+
+	    double pt1=stubs_[iSector][i].pt();
+	    double pt2=L->stubs_[jSector][j].pt();
+	    double pttracklet=0.3*3.8/(rinv*100);
+	    bool pass1=fabs(1.0/pt1-1.0/pttracklet)<0.25;
+	    bool pass2=fabs(1.0/pt2-1.0/pttracklet)<0.25;
+	    bool pass=pass1&&pass2;
+
+	    if (0) {
+	      static ofstream out("ptmatch.txt");
+	      out << pt1<<" "
+	          << pt2<<" "
+	          << pttracklet<<" "
+	          << pass
+		  << endl;
+	    }
+
+	    if (!pass) continue;
 
 	    L1TTracklet tracklet(rinv,phi0,t,z0);
 	    tracklet.addStub(stubs_[iSector][i]);
@@ -244,7 +265,7 @@ public:
 	    if (fabs(z-zprojapprox)>10.0) continue;
 	    double phi=L->stubs_[jSector][j].phi();
 	    double deltaphiapprox=fabs(phi-phiprojapprox);
-	    assert(deltaphiapprox<1.0);
+	    assert(deltaphiapprox<12.0);
 	    if (deltaphiapprox*rapprox>5.0) continue;
 	    double r=L->stubs_[jSector][j].r();
 	    //cout << "r1 phi1 r2 phi2:"
@@ -328,8 +349,12 @@ public:
 
 	    int iphi=D->stubs_[jSector][j].iphi();
 	    double width=4.608;
-	    if (r<60.0) width=5.12;
-	    double Deltai=width*(iphi-508)/508.0;  //A bit of a hack...
+	    double nstrip=508.0;
+	    if (r<60.0) {
+	      width=4.8;
+	      nstrip=480;
+	    }
+	    double Deltai=width*(iphi-nstrip)/nstrip;  //A bit of a hack...
 	    if (z>0.0) Deltai=-Deltai;
 	    
 

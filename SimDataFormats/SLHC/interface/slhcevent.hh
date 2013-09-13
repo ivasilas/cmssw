@@ -33,6 +33,7 @@ class ModuleGeometry {
 public:
 
   ModuleGeometry() {
+
     x0_=0.0;
     y0_=0.0;
     z0_=0.0;
@@ -887,6 +888,13 @@ public:
 	
   }
 
+  int ptsign() {
+    int ptsgn=-1.0;
+    if (iphi()<iphiouter()) ptsgn=-ptsgn;
+    //if (z_<0.0) ptsgn=-ptsgn;
+    return ptsgn;
+  }
+
   double iphi() {
     if (!innerdigis_.size()>0) {
       cout << "innerdigis_.size()="<<innerdigis_.size()<<endl;
@@ -897,6 +905,18 @@ public:
       phi_tmp+=innerdigis_[i].first;
     }
     return phi_tmp/innerdigis_.size();
+  }
+
+  double iphiouter() {
+    if (!outerdigis_.size()>0) {
+      cout << "outerdigis_.size()="<<outerdigis_.size()<<endl;
+      return 0.0;
+    }
+    double phi_tmp=0.0;
+    for (unsigned int i=0;i<outerdigis_.size();i++){
+      phi_tmp+=outerdigis_[i].first;
+    }
+    return phi_tmp/outerdigis_.size();
   }
 
   double iz() {
@@ -922,6 +942,7 @@ public:
   double y() const { return y_; }
   double z() const { return z_; }
   double r() const { return sqrt(x_*x_+y_*y_); }
+  double pt() const { return pt_; }
 
 private:
 
@@ -1018,9 +1039,9 @@ public:
 
     for (unsigned int i=0;i<stubs_.size();i++) {
       if (fabs(stubs_[i].x()-stub.x())<0.2&&
-    	  fabs(stubs_[i].y()-stub.y())<0.2&&
-    	  fabs(stubs_[i].z()-stub.z())<2.0) {
-    	foundclose=true;
+	  fabs(stubs_[i].y()-stub.y())<0.2&&
+	  fabs(stubs_[i].z()-stub.z())<2.0) {
+	//foundclose=true;
       }
     }
 
@@ -1030,7 +1051,7 @@ public:
     }
 
     return false;
-   
+    
   }
 
 

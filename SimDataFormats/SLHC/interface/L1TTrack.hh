@@ -155,7 +155,14 @@ public:
 	int iphi=stubs_[i].iphi();
 	double phii=stubs_[i].phi();
 
-	double Deltai=4.608*(iphi-508)/508.0;  //A bit of a hack...
+	double width=4.608;
+	double nstrip=508.0;
+	if (ri<60.0) {
+	  width=4.8;
+	  nstrip=480;
+	}
+	double Deltai=width*(iphi-nstrip)/nstrip;  //A bit of a hack...
+
 	if (stubs_[i].z()>0.0) Deltai=-Deltai;
 	double theta0=asin(Deltai/ri);
 
@@ -278,7 +285,15 @@ public:
 	double phi_track=phi0fit_-0.5*rinvfit_*(zi-z0fit_)/tfit_;
 
 	int iphi=stubs_[i].iphi();
-	double Deltai=4.608*(iphi-508)/508.0;  //A bit of a hack...
+
+	double width=4.608;
+	double nstrip=508.0;
+	if (ri<60.0) {
+	  width=4.8;
+	  nstrip=480;
+	}
+	double Deltai=width*(iphi-nstrip)/nstrip;  //A bit of a hack...
+
 	if (stubs_[i].z()>0.0) Deltai=-Deltai;
 
 	double theta0=asin(Deltai/ri);
@@ -395,7 +410,15 @@ public:
 	double phi_track=phi0_-0.5*rinv_*(zi-z0_)/t_;
 
 	int iphi=stubs_[i].iphi();
-	double Deltai=4.608*(iphi-508)/508.0;  //A bit of a hack...
+
+	double width=4.608;
+	double nstrip=508.0;
+	if (ri<60.0) {
+	  width=4.8;
+	  nstrip=480;
+	}
+	double Deltai=width*(iphi-nstrip)/nstrip;  //A bit of a hack...
+
 	if (stubs_[i].z()>0.0) Deltai=-Deltai;
 
 	double theta0=asin(Deltai/ri);
@@ -429,7 +452,15 @@ public:
 	  phi_track=phi0_+dphi0-0.5*(rinv_+drinv)*(zi-(z0_+dz0))/(t_+dt);
 	  
 	  iphi=stubs_[i].iphi();
-	  Deltai=4.608*(iphi-508)/508.0;  //A bit of a hack...
+
+	  double width=4.608;
+	  double nstrip=508.0;
+	  if (ri<60.0) {
+	    width=4.8;
+	    nstrip=480;
+	  }
+	  Deltai=width*(iphi-nstrip)/nstrip;  //A bit of a hack...
+
 	  if (stubs_[i].z()>0.0) Deltai=-Deltai;
 	  theta0=asin(Deltai/ri);
 	  

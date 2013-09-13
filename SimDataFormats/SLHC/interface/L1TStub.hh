@@ -19,7 +19,7 @@ public:
   }
 
   L1TStub(int simtrackid, int iphi, int iz, int layer, int ladder, int module, 
-	  double x, double y, double z, double sigmax, double sigmaz){
+	  double x, double y, double z, double sigmax, double sigmaz, double pt){
     simtrackid_=simtrackid;
     iphi_=iphi;
     iz_=iz;
@@ -33,9 +33,18 @@ public:
     ideltaz_=0;
     sigmax_=sigmax;
     sigmaz_=sigmaz;
+    pt_=pt;
     assert(z_<300.0); assert(z_>-300.0);
   }
 
+  void lorentzcor(double shift){
+    double r=this->r();
+    double phi=this->phi()-shift/r;
+    this->x_=r*cos(phi);
+    this->y_=r*sin(phi);
+  }
+
+  
 
   double r() const { return sqrt(x_*x_+y_*y_); }
   double z() const { 
@@ -73,6 +82,8 @@ public:
   double sigmax() const {return sigmax_;}
   double sigmaz() const {return sigmaz_;}
 
+  double pt() const {return pt_;}
+
 private:
 
   int simtrackid_;
@@ -86,6 +97,7 @@ private:
   double z_;
   double sigmax_;
   double sigmaz_;
+  double pt_;
 
   int ideltarphi_;
   int ideltaz_;

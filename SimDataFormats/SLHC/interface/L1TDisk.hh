@@ -82,12 +82,8 @@ public:
 	    double dist=sqrt(r2*r2+r1*r1-2*r1*r2*cos(deltaphi));
         
 	    double rinv=2*sin(deltaphi)/dist;
-
-	    double tmp=0.5*r1*rinv;
 	    
-	    if (fabs(tmp)>=1.0) continue;
-	    
-	    double phi0=phi1+asin(tmp);
+	    double phi0=phi1+asin(0.5*r1*rinv);
 
 	    if (phi0>0.5*two_pi) phi0-=two_pi;
 	    if (phi0<-0.5*two_pi) phi0+=two_pi;
@@ -172,8 +168,12 @@ public:
 
 	    int iphi=D->stubs_[jSector][j].iphi();
 	    double width=4.608;
-	    if (r<60.0) width=5.12;
-	    double Deltai=width*(iphi-508)/508.0;  //A bit of a hack...
+	    double nstrip=508.0;
+	    if (r<60.0) {
+	      width=4.8;
+	      nstrip=480;
+	    }
+	    double Deltai=width*(iphi-nstrip)/nstrip;  //A bit of a hack...
 	    if (z>0.0) Deltai=-Deltai;
 	    
 
