@@ -107,6 +107,7 @@ public:
 	    }
 
 	    if (fabs(z0)>15.0) continue;
+
 	    double pt1=stubs_[iSector][i].pt();
 	    double pt2=L->stubs_[jSector][j].pt();
 	    double pttracklet=0.3*3.8/(rinv*100);
@@ -215,7 +216,6 @@ public:
 
 	    if (fabs(z0)>15.0) continue;
 
-
 	    double pt1=stubs_[iSector][i].pt();
 	    double pt2=D->stubs_[jSector][j].pt();
 	    double pttracklet=0.3*3.8/(rinv*100);
@@ -309,11 +309,10 @@ public:
 	    if (fabs(rdeltaphi)>cutrphi*phiSF) continue;
 	    if (fabs(deltaz)>cutrz) continue;
 
-	    double pt1=L->stubs_[jSector][j].pt();
-	    double pttracklet=aTracklet.pt(3.8);
-	    bool pass1=fabs(1.0/pt1-1.0/pttracklet)<0.5;
-
-	    if (!pass1) continue; 
+	    //double pt1=L->stubs_[jSector][j].pt();
+	    //double pttracklet=aTracklet.pt(3.8);
+	    //bool pass1=fabs(1.0/pt1-1.0/pttracklet)<0.5;
+	    //if (!pass1) continue; 
 
 	    double dist=hypot(rdeltaphi/cutrphi,deltaz/cutrz);
 
