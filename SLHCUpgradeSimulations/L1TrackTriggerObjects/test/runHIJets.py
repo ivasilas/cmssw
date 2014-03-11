@@ -126,6 +126,7 @@ process.pJets = cms.Path(process.L1TkJets)
 process.L1TkHTMiss = cms.EDProducer("L1TkHTMissProducer",
                                     L1TkJetInputTag = cms.InputTag("L1TkJets","Central"),
                                     JET_PTMIN = cms.double(20.0),          # minimum pt of jets for HT [GeV]
+                                    JET_ETAMAX = cms.double(2.0),          # maximum jet eta
                                     JET_HLTETA = cms.bool(True),           # temporary hack, for HLT jets remove jets from bad eta regions
                                     DoVtxConstrain = cms.bool(True),       # turn on/off applying any vertex constraint
                                     DeltaZ = cms.double(1.0),              # require jets to have |z_jet - z_ref| < DeltaZ [cm]

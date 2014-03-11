@@ -59,6 +59,7 @@ private:
   edm::InputTag L1TkJetInputTag;
   
   float JET_PTMIN;                // [GeV]
+  float JET_ETAMAX;               // [rad]
   bool JET_HLTETA;                // temporary hack to remove bad jets when using HI HLT jets...
   bool DoVtxConstrain;            // require vertex constraint
   bool PrimaryVtxConstrain;       // use event primary vertex instead of leading jet (if DoVtxConstrain)
@@ -74,6 +75,7 @@ L1TkHTMissProducer::L1TkHTMissProducer(const edm::ParameterSet& iConfig)
   L1TkJetInputTag = iConfig.getParameter<edm::InputTag>("L1TkJetInputTag");
   
   JET_PTMIN  = (float)iConfig.getParameter<double>("JET_PTMIN");
+  JET_ETAMAX = (float)iConfig.getParameter<double>("JET_ETAMAX");
   JET_HLTETA = (float)iConfig.getParameter<bool>("JET_HLTETA");
 
   DoVtxConstrain      = iConfig.getParameter<bool>("DoVtxConstrain");
@@ -130,16 +132,11 @@ void L1TkHTMissProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
   
 
   // ----------------------------------------------------------------------------------------------
-  // "event vertex", this will either be primary vertex of z position of leading jet
+  // if PrimaryVtxConstrain, use the primary vertex instead of z position from leading jet
   // ----------------------------------------------------------------------------------------------
 
   float evt_zvtx = -999;
   bool found_vtx = false;
-
-
-  // ----------------------------------------------------------------------------------------------
-  // if PrimaryVtxConstrain, use the primary vertex instead of z position from leading jet
-  // ----------------------------------------------------------------------------------------------
 
   edm::Ref< L1TrackPrimaryVertexCollection > L1VtxRef; 	// null reference
 
@@ -164,11 +161,54 @@ void L1TkHTMissProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
   } //endif PrimaryVtxConstrain
 
 
+  // ----------------------------------------------------------------------------------------------
+  // using z position of leading jet to define "event vertex"
+  // ----------------------------------------------------------------------------------------------
+
+  float zvtx_jetpt = -999;
+
+  if ( DoVtxConstrain && !PrimaryVtxConstrain ) {
+
+    for (jetIter = L1TkJetsHandle->begin(); jetIter != L1TkJetsHandle->end(); ++jetIter) {
+
+      // only consider jets from the central BX
+      int ibx = jetIter->bx();
+      if (ibx != 0) continue;
+      
+      float jetVtx = jetIter->getJetVtx();
+      float tmp_jet_pt  = jetIter->pt();
+      float tmp_jet_eta = jetIter->eta();
+      float tmp_jet_phi = jetIter->phi();
+      
+      if (tmp_jet_pt < JET_PTMIN) continue; 
+      if (fabs(tmp_jet_eta) > JET_ETAMAX) continue;
+      
+      if (JET_HLTETA) {
+	if ( (tmp_jet_eta > -2.0) && (tmp_jet_eta < -1.5) && (tmp_jet_phi > -1.7) && (tmp_jet_phi < -1.3) ) continue;
+	if ( (tmp_jet_eta > 0.0) && (tmp_jet_eta < 1.4) && (tmp_jet_phi > -2.0) && (tmp_jet_phi < -1.6) ) continue;
+      }
+      
+      // find vertex position of leading jet
+      if (tmp_jet_pt > zvtx_jetpt) {
+	evt_zvtx = jetVtx;
+	zvtx_jetpt = tmp_jet_pt;
+	found_vtx = true; 
+      }
+
+    }//end loop over jets
+
+  }//endif z position from leading jet
+
+
   float sumPx = 0;
   float sumPy = 0;
   float etTot = 0; //HT
   
-  
+
+  if (!found_vtx) std::cout << "WARNING: didn't find any z vertex for this event!" << std::endl;  
+
+
+
   // ----------------------------------------------------------------------------------------------
   // loop over jets
   // ----------------------------------------------------------------------------------------------
@@ -188,17 +228,12 @@ void L1TkHTMissProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSet
     float tmp_jet_phi = jetIter->phi();
     
     if (tmp_jet_pt < JET_PTMIN) continue; 
+    if (fabs(tmp_jet_eta) > JET_ETAMAX) continue;
 
     if (JET_HLTETA) {
       if ( (tmp_jet_eta > -2.0) && (tmp_jet_eta < -1.5) && (tmp_jet_phi > -1.7) && (tmp_jet_phi < -1.3) ) continue;
       if ( (tmp_jet_eta > 0.0) && (tmp_jet_eta < 1.4) && (tmp_jet_phi > -2.0) && (tmp_jet_phi < -1.6) ) continue;
     }
-
-    if (!PrimaryVtxConstrain && !found_vtx) {
-      evt_zvtx = jetVtx;
-      found_vtx = true;
-      //std::cout << "event vertex is " << evt_zvtx << std::endl;
-    } 
 
     // vertex consistency requirement
     bool VtxRequirement = fabs(jetVtx - evt_zvtx) < DeltaZ;
