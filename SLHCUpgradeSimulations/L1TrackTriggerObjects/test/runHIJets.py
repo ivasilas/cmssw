@@ -114,7 +114,7 @@ process.L1TkJets = cms.EDProducer("L1TkJetProducer",
                                   TRK_PTMIN = cms.double(2.0),    # minimum track pt [GeV]
                                   TRK_ETAMAX = cms.double(2.5),   # maximum track eta
                                   TRK_NSTUBMIN = cms.int32(4),    # minimum number of stubs on track
-                                  TRK_NSTUBPSMIN = cms.int32(0),  # DOESN'T WORK, KEEP AT ZERO !!! minimum number of stubs in PS modules on track        
+                                  TRK_NSTUBPSMIN = cms.int32(2),  # minimum number of stubs in PS modules on track        
 )
 process.pJets = cms.Path(process.L1TkJets)
 

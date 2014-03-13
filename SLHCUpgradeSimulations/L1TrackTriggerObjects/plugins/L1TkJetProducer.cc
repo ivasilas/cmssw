@@ -74,7 +74,7 @@ private:
   //virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
   //virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
   
-  // ---------- member data ---------------------------
+  // member data
   edm::InputTag L1CentralJetInputTag;
   edm::InputTag L1TrackInputTag;
 
@@ -86,6 +86,7 @@ private:
   int   TRK_NSTUBMIN;   // minimum number of stubs 
   int   TRK_NSTUBPSMIN; // minimum number of stubs in PS modules 
 
+  // geometry for stub info
   const StackedTrackerGeometry* theStackedGeometry;
 
 };
@@ -140,6 +141,11 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<L1TkTrackCollectionType> L1TkTrackHandle;
   iEvent.getByLabel(L1TrackInputTag, L1TkTrackHandle);
   L1TkTrackCollectionType::const_iterator trackIter;
+
+  // geometry handles (for stub info)
+  edm::ESHandle<StackedTrackerGeometry> StackedGeometryHandle;
+  iSetup.get< StackedTrackerGeometryRecord >().get(StackedGeometryHandle);
+  theStackedGeometry = StackedGeometryHandle.product();
 
 
   // ----------------------------------------------------------------------------------------------
@@ -229,13 +235,11 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	// loop over the stubs
 	int tmp_trk_nstubPS = 0;
-	/*
 	for (unsigned int istub=0; istub<(unsigned int)theStubs.size(); istub++) {
 	  StackedTrackerDetId detIdStub(theStubs.at(istub)->getDetId());
 	  bool tmp_isPS = theStackedGeometry->isPSModule(detIdStub);
 	  if (tmp_isPS) tmp_trk_nstubPS++;
 	}
-	*/
 
 	// more track selection
 	if (tmp_trk_nstubPS < TRK_NSTUBPSMIN) continue;
