@@ -125,7 +125,7 @@ process.pJets = cms.Path( process.L1TkJets )
 
 process.load("SLHCUpgradeSimulations.L1TrackTriggerObjects.L1TkHTMissProducer_cfi")
 process.pHTMCalo = cms.Path( process.L1TkHTMissCalo )		# calo only, no vtx constraint
-process.pHTMVtx  = cms.Path( process.L1TkHTMissVtx )	     	# HT and MHT from jets that come from the same vertex
+process.pHTMVtx  = cms.Path( process.L1TkHTMissVtx )	    # HT and MHT from jets that come from the same vertex
 
 
 # ---------------------------------------------------------------------------

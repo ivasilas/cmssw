@@ -22,6 +22,7 @@ L1JetsFromHIHLTJets = cms.EDProducer("L1JetsFromHIHLTJets",
 from SLHCUpgradeSimulations.L1TrackTriggerObjects.L1TkJetProducer_cfi import L1TkJets
 L1TkJetsHI = L1TkJets.clone()
 L1TkJetsHI.L1CentralJetInputTag = cms.InputTag("L1JetsFromHIHLTJets")
+L1TkJetsHI.JET_HLTETA = cms.bool(True)
 
 
 # --- Produce HT and MHT with and without the vertex constraint
